@@ -49,9 +49,9 @@ const drawTicksPlugin = {
         ctx.stroke();
         ctx.restore();
 
-        const offset = 12;
-        const valueX = tickPoint.x + Math.cos(scale.getIndexAngle(index)) * offset;
-        const valueY = tickPoint.y + Math.sin(scale.getIndexAngle(index)) * offset;
+        const offset = 20;
+        const valueX = tickPoint.x + Math.cos(perpendicularAngle) * offset;
+        const valueY = tickPoint.y + Math.sin(perpendicularAngle) * offset;
 
         ctx.fillStyle = "black";
         ctx.font = "12px Arial";
@@ -62,6 +62,7 @@ const drawTicksPlugin = {
     });
   },
 };
+
 
 
 
