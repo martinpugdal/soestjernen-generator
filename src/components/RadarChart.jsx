@@ -19,6 +19,52 @@ ChartJS.register(
   Legend
 );
 
+const drawTicksPlugin = {
+  id: "drawTicksPlugin",
+  afterDraw: (chart) => {
+    const { ctx, scales } = chart;
+    const scale = scales.r;
+    const tickPositions = scale.ticks.map((tick) => tick.value);
+    const radius = scale.drawingArea;
+
+    tickPositions.forEach((tickValue) => {
+      const tickRadius = (tickValue / scale.max) * radius; 
+      scale._pointLabels.forEach((label, index) => {
+
+        // Define padding and backdrop dimensions
+        const padding = 2.5; 
+        const textWidth = ctx.measureText(tickValue).width; 
+        const textHeight = 12;
+
+        // Calculate position of tick value
+        const angle = scale.getPointPosition(index, tickRadius);
+        const x = angle.x;
+        const y = angle.y;
+
+        // Draw white backdrop
+        ctx.save();
+        ctx.fillStyle = "white";
+        ctx.fillRect(
+          x - textWidth / 2 - padding, 
+          y - textHeight / 2 - padding,
+          textWidth + padding * 2,
+          textHeight + padding * 2 
+        );
+
+        // Draw tick value
+        ctx.fillStyle = "black"; 
+        ctx.font = "12px Arial"; 
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(tickValue, x, y); 
+        ctx.restore();
+      });
+    });
+  },
+};
+
+
+
 const RadarChart = ({ data }) => {
   const chartData = {
     labels: [
@@ -55,9 +101,7 @@ const RadarChart = ({ data }) => {
         max: 3,
         ticks: {
           stepSize: 1,
-          display: true,
-          color: "black",
-          backdropColor: "white",
+          display: false, // Hide default ticks
         },
         grid: {
           color: "black",
@@ -86,7 +130,7 @@ const RadarChart = ({ data }) => {
 
   return (
     <div style={{ width: "90vw", height: "60vh", margin: "0 auto" }}>
-      <Radar data={chartData} options={options} />
+      <Radar data={chartData} options={options} plugins={[drawTicksPlugin]} />
     </div>
   );
 };
