@@ -11,7 +11,7 @@ const InputForm = ({ onChange, currentValues }) => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    const updatedValues = { ...values, [name]: Math.max(1, Math.min(3, parseInt(value))) };
+    const updatedValues = { ...values, [name]: Math.max(0, Math.min(3, parseInt(value))) };
     setValues(updatedValues);
     onChange(updatedValues);
   };
