@@ -24,32 +24,21 @@ const drawTicksPlugin = {
   afterDraw: (chart) => {
     const { ctx, scales } = chart;
     const scale = scales.r;
-    const tickPositions = scale.ticks.map((tick) => tick.value);
+    const tickPositions = scale.ticks.map((tick) => tick.value).filter((value) => value > 0);
     const radius = scale.drawingArea;
 
     tickPositions.forEach((tickValue) => {
       const tickRadius = (tickValue / scale.max) * radius; 
       scale._pointLabels.forEach((label, index) => {
 
-        // Define padding and backdrop dimensions
-        const padding = 2.5; 
-        const textWidth = ctx.measureText(tickValue).width; 
-        const textHeight = 12;
-
-        // Calculate position of tick value
+        // Offset tick value based on angle
+        const angleRadians = scale.getIndexAngle(index);
         const angle = scale.getPointPosition(index, tickRadius);
-        const x = angle.x;
-        const y = angle.y;
+        const offset = 15;
 
-        // Draw white backdrop
-        ctx.save();
-        ctx.fillStyle = "white";
-        ctx.fillRect(
-          x - textWidth / 2 - padding, 
-          y - textHeight / 2 - padding,
-          textWidth + padding * 2,
-          textHeight + padding * 2 
-        );
+        // Adjust position with offset
+        const x = angle.x + Math.cos(angleRadians) * offset;
+        const y = angle.y + Math.sin(angleRadians) * offset;
 
         // Draw tick value
         ctx.fillStyle = "black"; 
