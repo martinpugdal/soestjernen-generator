@@ -24,29 +24,40 @@ const drawTicksPlugin = {
   afterDraw: (chart) => {
     const { ctx, scales } = chart;
     const scale = scales.r;
-    const tickPositions = scale.ticks.map((tick) => tick.value).filter((value) => value > 0);
     const radius = scale.drawingArea;
+    const tickPositions = scale.ticks.map((tick) => tick.value).filter((value) => value > 0);
 
     tickPositions.forEach((tickValue) => {
-      const tickRadius = (tickValue / scale.max) * radius; 
+      const tickRadius = (tickValue / scale.max) * radius;
+
       scale._pointLabels.forEach((label, index) => {
+        const tickPoint = scale.getPointPosition(index, tickRadius);
 
-        // Offset tick value based on angle
-        const angleRadians = scale.getIndexAngle(index);
-        const angle = scale.getPointPosition(index, tickRadius);
-        const offset = 15;
+        const perpendicularAngle = scale.getIndexAngle(index);
+        const lineLength = 20;
+        const startX = tickPoint.x - Math.cos(perpendicularAngle) * (lineLength / 2);
+        const startY = tickPoint.y - Math.sin(perpendicularAngle) * (lineLength / 2);
+        const endX = tickPoint.x + Math.cos(perpendicularAngle) * (lineLength / 2);
+        const endY = tickPoint.y + Math.sin(perpendicularAngle) * (lineLength / 2);
 
-        // Adjust position with offset
-        const x = angle.x + Math.cos(angleRadians) * offset;
-        const y = angle.y + Math.sin(angleRadians) * offset;
+        ctx.save();
+        ctx.strokeStyle = "black";
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(startX, startY);
+        ctx.lineTo(endX, endY);
+        ctx.stroke();
+        ctx.restore();
 
-        // Draw tick value
-        ctx.fillStyle = "black"; 
-        ctx.font = "12px Arial"; 
+        const offset = 12;
+        const valueX = tickPoint.x + Math.cos(scale.getIndexAngle(index)) * offset;
+        const valueY = tickPoint.y + Math.sin(scale.getIndexAngle(index)) * offset;
+
+        ctx.fillStyle = "black";
+        ctx.font = "12px Arial";
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
-        ctx.fillText(tickValue, x, y); 
-        ctx.restore();
+        ctx.fillText(tickValue, valueX, valueY);
       });
     });
   },
@@ -94,7 +105,7 @@ const RadarChart = ({ data }) => {
         },
         grid: {
           color: "black",
-          lineWidth: 2,
+          lineWidth: 0,
         },
         angleLines: {
           display: true,
