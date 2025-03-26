@@ -16,63 +16,29 @@ const InputForm = ({ onChange, currentValues }) => {
     onChange(updatedValues);
   };
 
+  const fields = [
+    { label: "Kravstabilitet", name: "kravstabilitet" },
+    { label: "Projekt-størrelse", name: "projektStoerrelse" },
+    { label: "Kompleksitet", name: "kompleksitet" },
+    { label: "Projekt-team", name: "projektTeam" },
+    { label: "Kritikalitet af fejl", name: "kritikalitetAfFejl" },
+  ];
+
   return (
     <form>
-      <label>
-        Kravstabilitet:
-        <input
-          type="number"
-          name="kravstabilitet"
-          min="1"
-          max="3"
-          value={values.kravstabilitet}
-          onChange={handleChange}
-        />
-      </label>
-      <label>
-        Projekt-størrelse:
-        <input
-          type="number"
-          name="projektStoerrelse"
-          min="1"
-          max="3"
-          value={values.projektStoerrelse}
-          onChange={handleChange}
-        />
-      </label>
-      <label>
-        Kompleksitet:
-        <input
-          type="number"
-          name="kompleksitet"
-          min="1"
-          max="3"
-          value={values.kompleksitet}
-          onChange={handleChange}
-        />
-      </label>
-      <label>
-        Projekt-team:
-        <input
-          type="number"
-          name="projektTeam"
-          min="1"
-          max="3"
-          value={values.projektTeam}
-          onChange={handleChange}
-        />
-      </label>
-      <label>
-        Kritikalitet af fejl:
-        <input
-          type="number"
-          name="kritikalitetAfFejl"
-          min="1"
-          max="3"
-          value={values.kritikalitetAfFejl}
-          onChange={handleChange}
-        />
-      </label>
+      {fields.map((field) => (
+        <label key={field.name}>
+          {field.label}:
+          <input
+            type="number"
+            name={field.name}
+            min="0"
+            max="3"
+            value={values[field.name]}
+            onChange={handleChange}
+          />
+        </label>
+      ))}
     </form>
   );
 };
